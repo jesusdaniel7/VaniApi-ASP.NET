@@ -7,15 +7,15 @@ using Vani.Models;
 
 namespace Vani.Data
 {
-    public class ApplicationDbContext : DbContext  
+    public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            :base(options)
+            : base(options)
         {
-
         }
 
-        DbSet<StoreType> StoreTypes { get; set; }
-        DbSet<Store> Stores { get; set; }
+        public DbSet<StoreType> StoreTypes { get; set; }
+        public DbSet<Store> Stores { get; set; }
+        public DbSet<Province> Provinces { get; set; }
     }
 }

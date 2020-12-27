@@ -4,18 +4,14 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Vani.Models
+namespace Vani.Dtos
 {
-    public class Store
+    public class StoreDTO
     {
-        [Key]
         public int StoreId { get; set; }
         [Display(Name = "Nombre")]
-        [Required(ErrorMessage = "Este campo es requerido")]
-        [MaxLength(50, ErrorMessage = "este nombre excede los {1} caracteres")]
         public string Name { get; set; }
         [Display(Name = "Descripción")]
-        [Required(ErrorMessage = "Este campo es requerido")]
         public string Description { get; set; }
         [Display(Name = "Cuenta de instagram")]
         public string InstagramAccount { get; set; }
@@ -31,8 +27,7 @@ namespace Vani.Models
         public string Photo { get; set; }
         [Display(Name = "Categoria")]
         public int StoretypeId { get; set; }
-        public StoreType StoreType { get; set; }
-        public Province Province { get; set; }
-
+        public StoreTypeDTO StoreTypeDTO { get; set; }
+        public ProvinceDTO ProvinceDTO { get; set; }
     }
 }
