@@ -14,6 +14,10 @@ namespace Vani.Helpers
         {
             CreateMap<Store, StoreDTO>();
             CreateMap<StoreCreationDTO, Store>();
+            CreateMap<StoreTypeCreationDTO, StoreType>();
+            CreateMap<StorePhotosCreationDTO, StorePhotos>();
+            CreateMap<Province, ProvinceDTO>();
+            CreateMap<ProvinceCreationDTO,Province>();
         }
     }
 }

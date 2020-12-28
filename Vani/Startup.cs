@@ -14,6 +14,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Vani.Data;
 using AutoMapper;
+using Vani.Services;
 
 namespace Vani
 {
@@ -29,10 +30,21 @@ namespace Vani
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                var fronted_Url = Configuration.GetValue<string>("fronted_url");
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.WithOrigins(fronted_Url).AllowAnyMethod().AllowAnyHeader().WithExposedHeaders( new string[] { "quantityPage", "quantity" });
+                });
+            });
+            
             services.AddControllersWithViews()
             .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
+            services.AddHttpClient();
+            services.AddTransient<IStockerAzureStorage, StockerAzureStorage>();
             services.AddAutoMapper(typeof(Startup));
             services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -56,6 +68,8 @@ namespace Vani
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 

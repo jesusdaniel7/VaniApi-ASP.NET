@@ -17,5 +17,6 @@ namespace Vani.Data
         public DbSet<StoreType> StoreTypes { get; set; }
         public DbSet<Store> Stores { get; set; }
         public DbSet<Province> Provinces { get; set; }
+        public DbSet<StorePhotos> StorePhotos { get; set; }
     }
 }

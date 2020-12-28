@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Vani.Data;
+using Vani.Dtos;
+using Vani.Helpers;
 using Vani.Models;
 
 namespace Vani.Controllers
@@ -25,10 +27,14 @@ namespace Vani.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<StoreType>>> Get()
+        public async Task<ActionResult<List<StoreType>>> Get([FromHeader] PaginateDTO paginateDTO)
         {
+            var queryable = context.StoreTypes.AsQueryable();
+            await HttpContext.InsertPaginationParameters(queryable, paginateDTO.RecordsPerPage);
 
-            return await context.StoreTypes.ToListAsync();
+            var storeTypes = await queryable.OrderBy(x => x.Name).Paginate(paginateDTO).ToListAsync();
+
+            return storeTypes;
         }
 
         [HttpGet("{id}", Name = "GetStoreType")]
@@ -48,11 +54,14 @@ namespace Vani.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<StoreType>> Put([FromBody] StoreType storeType, int id)
+        public async Task<ActionResult> Put([FromBody] StoreTypeCreationDTO storeTypeCreationDTO, int id)
         {
-            if(id != storeType.StoreTypeId) { return BadRequest(); }
-            context.Entry(storeType).State = EntityState.Modified;
+            var storeTypeDb = await context.StoreTypes.AsNoTracking().FirstOrDefaultAsync(x => x.StoreTypeId == id);
+            if (storeTypeDb == null) { return NotFound(); }
 
+            var storeType = mapper.Map<StoreType>(storeTypeCreationDTO);
+            storeType.StoreTypeId = id;
+            context.Entry(storeType).State = EntityState.Modified;
             await context.SaveChangesAsync();
             return NoContent();
         }
@@ -60,17 +69,14 @@ namespace Vani.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!Exists(id)) { return NotFound(); }
-            var storeType = await context.StoreTypes.FirstOrDefaultAsync(x => x.StoreTypeId == id);
-            context.StoreTypes.Remove(storeType);
+            var exist = context.StoreTypes.Any(x => x.StoreTypeId == id);
+            if (!exist) { return NotFound(); }
+           
+            context.Remove(new StoreType() { StoreTypeId = id});
             await context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        public bool Exists(int id)
-        {
-            return context.StoreTypes.Any(x => x.StoreTypeId == id);
-        }
     }
 }

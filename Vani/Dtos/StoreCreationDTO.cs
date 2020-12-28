@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Vani.Validations;
 
 namespace Vani.Dtos
 {
@@ -28,7 +30,9 @@ namespace Vani.Dtos
         [Display(Name = "Longitud")]
         public string Long { get; set; }
         [Display(Name = "Foto")]
-        public string Photo { get; set; }
+        [FileSizeValidation(10)]
+        [ContentTypeValidation(contentTypeGroup: ContentTypeGroup.Photo)]
+        public IFormFile Photo { get; set; }
       
     }
 }

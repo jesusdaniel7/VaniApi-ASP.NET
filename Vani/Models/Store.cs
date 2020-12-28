@@ -33,6 +33,7 @@ namespace Vani.Models
         public int StoretypeId { get; set; }
         public StoreType StoreType { get; set; }
         public Province Province { get; set; }
+        public List<StorePhotos> Photos { get; set; }
 
     }
 }
